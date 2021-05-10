@@ -43,13 +43,13 @@ public class OrderRepositoryTests {
 
         Order order = new Order();
         order.setCustomer(customer);
-        order.setTotal(firstValue);
+        //order.setTotal(firstValue);
         order.setOrderDate(firstDate);
         orders.add(order);
 
         order = new Order();
         order.setCustomer(customer);
-        order.setTotal(secondValue);
+        //order.setTotal(secondValue);
         order.setOrderDate(secondDate);
         orders.add(order);
 

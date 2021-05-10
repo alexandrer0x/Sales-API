@@ -26,7 +26,7 @@ public class CustomerRepositoryTests {
 
         customer = repository.save(customer);
 
-        Customer result = repository.findCustomerFetchOrders(customer.getId()).get();
+        Customer result = repository.findOneById(customer.getId()).get();
 
         //repository.deleteById(result.getId());
 
