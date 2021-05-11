@@ -6,21 +6,25 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
-public class CustomerWithoutOrdersDTO implements Serializable {
+public class CustomerResponseWithOrdersDTO implements Serializable {
     private Long id;
     private String name;
     private String cpf;
+    private List<OrderDTO> orders = new ArrayList<>();
 
-    public CustomerWithoutOrdersDTO() {
+    public CustomerResponseWithOrdersDTO() {
     }
 
-    public CustomerWithoutOrdersDTO(Customer customer) {
+    public CustomerResponseWithOrdersDTO(Customer customer) {
         this.id = customer.getId();
         this.name = customer.getName();
         this.cpf = customer.getCpf();
+        customer.getOrders().forEach(x -> orders.add(new OrderDTO(x)));
     }
 }

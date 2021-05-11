@@ -7,17 +7,15 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
-import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 @ToString
-public class CustomerDTO implements Serializable {
+public class CustomerRequestDTO implements Serializable {
+    @JsonIgnore
     private Long id;
 
     @NotEmpty(message = "Name field is empty")
@@ -29,21 +27,11 @@ public class CustomerDTO implements Serializable {
     @Length(min = 11, max = 11, message = "Invalid CPF number")
     private String cpf;
 
-    private List<OrderDTO> orders = new ArrayList<>();
-
-    public CustomerDTO() {
-    }
-
-    public CustomerDTO(Customer customer) {
-        this.id = customer.getId();
-        this.name = customer.getName();
-        this.cpf = customer.getCpf();
-        customer.getOrders().forEach(x -> orders.add(new OrderDTO(x)));
+    public CustomerRequestDTO() {
     }
 
     @JsonIgnore
     public Customer toEntity() {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(this, Customer.class);
+        return new Customer(this);
     }
 }

@@ -1,7 +1,7 @@
 package dev.alexandrevieira.sales.services;
 
-import dev.alexandrevieira.sales.api.dtos.CustomerDTO;
-import dev.alexandrevieira.sales.api.dtos.CustomerWithoutOrdersDTO;
+import dev.alexandrevieira.sales.api.dtos.CustomerResponseWithOrdersDTO;
+import dev.alexandrevieira.sales.api.dtos.CustomerResponseWithoutOrdersDTO;
 import dev.alexandrevieira.sales.domain.entities.Customer;
 import dev.alexandrevieira.sales.domain.repositories.CustomerRepository;
 import dev.alexandrevieira.sales.exceptions.BusinessRuleException;
@@ -17,14 +17,14 @@ public class CustomerService extends GenericEntityService<Customer, Long, Custom
         super(customerRepository);
     }
 
-    public CustomerWithoutOrdersDTO findWithoutOrders(Long id) {
+    public CustomerResponseWithoutOrdersDTO findWithoutOrders(Long id) {
         Customer customer = repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return  customer.noOrdersDTO();
+        return  customer.withoutOrdersDTO();
     }
 
-    public CustomerDTO findWithOrders(Long id) {
+    public CustomerResponseWithOrdersDTO findWithOrders(Long id) {
         Customer customer = ((CustomerRepository)repository).findOneById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 

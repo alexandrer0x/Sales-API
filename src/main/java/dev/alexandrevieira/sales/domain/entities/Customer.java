@@ -2,8 +2,9 @@ package dev.alexandrevieira.sales.domain.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.alexandrevieira.sales.api.dtos.CustomerDTO;
-import dev.alexandrevieira.sales.api.dtos.CustomerWithoutOrdersDTO;
+import dev.alexandrevieira.sales.api.dtos.CustomerRequestDTO;
+import dev.alexandrevieira.sales.api.dtos.CustomerResponseWithOrdersDTO;
+import dev.alexandrevieira.sales.api.dtos.CustomerResponseWithoutOrdersDTO;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,19 +64,27 @@ public class Customer implements Serializable, GenericEntity<Long> {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
+    public Customer() {
+    }
+    public Customer(CustomerRequestDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.cpf = dto.getCpf();
+    }
+
     @JsonIgnore
     public boolean allFieldsAreNullOrEmpty() {
         return id == null && (name == null || name.isEmpty()) && (cpf == null || cpf.isEmpty()) && (this.orders == null || this.orders.isEmpty());
     }
 
     @JsonIgnore
-    public CustomerDTO toDTO() {
+    public CustomerResponseWithOrdersDTO toDTO() {
         log.info(this.getClass().getSimpleName() + ".toDTO()");
-        return new CustomerDTO(this);
+        return new CustomerResponseWithOrdersDTO(this);
     }
 
-    public CustomerWithoutOrdersDTO noOrdersDTO() {
+    public CustomerResponseWithoutOrdersDTO withoutOrdersDTO() {
         log.info(this.getClass().getSimpleName() + ".noOrdersDTO()");
-        return new CustomerWithoutOrdersDTO(this);
+        return new CustomerResponseWithoutOrdersDTO(this);
     }
 }
