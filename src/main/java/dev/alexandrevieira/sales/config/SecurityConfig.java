@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] ADMIN = {"/**"};
     private static final String[] USER_POST = {"/orders/**"};
     private static final String[] USER_GET = {"/orders/**", "/customers/**"};
+
+    private static final String[] SWAGGER_MATCHERS = {"/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
+            "/configuration/security", "/swagger-ui.html", "/webjars/**"};
 
 
     @Bean
@@ -58,5 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(ADMIN).hasAuthority(Profile.ADMIN.name())
                 .anyRequest().denyAll();
         ;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(SWAGGER_MATCHERS);
     }
 }
