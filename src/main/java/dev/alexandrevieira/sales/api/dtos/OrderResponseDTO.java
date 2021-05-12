@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class OrderDTO implements Serializable {
+public class OrderResponseDTO implements Serializable {
     private Long id;
     private LocalDate orderDate;
     private List<OrderItemDTO> orderItems;
@@ -29,10 +29,10 @@ public class OrderDTO implements Serializable {
     @ToString.Exclude
     private Long customer;
 
-    public OrderDTO() {
+    public OrderResponseDTO() {
     }
 
-    public OrderDTO(Order order){
+    public OrderResponseDTO(Order order){
         this.id = order.getId();
         this.orderDate = order.getOrderDate();
         this.customer = order.getCustomer().getId();
@@ -64,13 +64,13 @@ public class OrderDTO implements Serializable {
     @ToString
     public static class OrderItemDTO implements Serializable {
         private Long id;
-        private ProductDTO product;
+        private ProductRequestDTO product;
         private Integer quantity;
         private BigDecimal priceAtOrder;
 
         public OrderItemDTO(OrderItem orderItem) {
             this.id = orderItem.getId();
-            this.product = new ProductDTO(orderItem.getProduct());
+            this.product = new ProductRequestDTO(orderItem.getProduct());
             this.quantity = orderItem.getQuantity();
             this.priceAtOrder = orderItem.getPriceAtOrder();
         }

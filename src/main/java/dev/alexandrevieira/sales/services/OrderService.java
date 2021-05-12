@@ -1,7 +1,7 @@
 package dev.alexandrevieira.sales.services;
 
 import dev.alexandrevieira.sales.api.dtos.NewOrderDTO;
-import dev.alexandrevieira.sales.api.dtos.OrderDTO;
+import dev.alexandrevieira.sales.api.dtos.OrderResponseDTO;
 import dev.alexandrevieira.sales.domain.entities.Customer;
 import dev.alexandrevieira.sales.domain.entities.Order;
 import dev.alexandrevieira.sales.domain.entities.OrderItem;
@@ -43,7 +43,7 @@ public class OrderService extends GenericEntityService<Order, Long, OrderReposit
     }
 
 
-    public OrderDTO findDTO(Long id) {
+    public OrderResponseDTO findDTO(Long id) {
         Order order = ((OrderRepository) repository).findOneById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 

@@ -2,7 +2,7 @@ package dev.alexandrevieira.sales.domain.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.alexandrevieira.sales.api.dtos.OrderDTO;
+import dev.alexandrevieira.sales.api.dtos.OrderResponseDTO;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,9 +51,9 @@ public class OrderItem implements Serializable, GenericEntity<Long> {
     }
 
     @Override
-    public OrderDTO.OrderItemDTO toDTO() {
+    public OrderResponseDTO.OrderItemDTO toDTO() {
         log.info(this.getClass().getSimpleName() + ".toDTO()");
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(this, OrderDTO.OrderItemDTO.class);
+        return modelMapper.map(this, OrderResponseDTO.OrderItemDTO.class);
     }
 }

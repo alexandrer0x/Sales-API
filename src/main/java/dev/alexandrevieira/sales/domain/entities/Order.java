@@ -2,7 +2,8 @@ package dev.alexandrevieira.sales.domain.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.alexandrevieira.sales.api.dtos.OrderDTO;
+import dev.alexandrevieira.sales.api.dtos.OrderRequestDTO;
+import dev.alexandrevieira.sales.api.dtos.OrderResponseDTO;
 import dev.alexandrevieira.sales.domain.enums.OrderStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,6 +48,15 @@ public class Order implements Serializable, GenericEntity<Long> {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    public Order() {
+    }
+
+    public Order(OrderRequestDTO dto) {
+        this.id = dto.getId();
+        this.orderDate = dto.getDate() == null ? null : LocalDate.parse(dto.getDate());
+        this.status = dto.getStatus();
+    }
+
     public BigDecimal getTotal() {
         BigDecimal total = BigDecimal.valueOf(0);
 
@@ -64,11 +74,8 @@ public class Order implements Serializable, GenericEntity<Long> {
     }
 
     @Override
-    public OrderDTO toDTO() {
+    public OrderResponseDTO toDTO() {
         log.info(this.getClass().getSimpleName() + ".toDTO()");
-//        ModelMapper modelMapper = new ModelMapper();
-//        return modelMapper.map(this, OrderDTO.class);
-
-        return new OrderDTO(this);
+        return new OrderResponseDTO(this);
     }
 }

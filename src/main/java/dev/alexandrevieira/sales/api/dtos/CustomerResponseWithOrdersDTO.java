@@ -16,7 +16,7 @@ public class CustomerResponseWithOrdersDTO implements Serializable {
     private Long id;
     private String name;
     private String cpf;
-    private List<OrderDTO> orders = new ArrayList<>();
+    private List<OrderResponseDTO> orders = new ArrayList<>();
 
     public CustomerResponseWithOrdersDTO() {
     }
@@ -25,6 +25,6 @@ public class CustomerResponseWithOrdersDTO implements Serializable {
         this.id = customer.getId();
         this.name = customer.getName();
         this.cpf = customer.getCpf();
-        customer.getOrders().forEach(x -> orders.add(new OrderDTO(x)));
+        customer.getOrders().forEach(x -> orders.add(new OrderResponseDTO(x)));
     }
 }

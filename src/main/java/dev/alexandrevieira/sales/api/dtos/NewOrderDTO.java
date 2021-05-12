@@ -1,5 +1,6 @@
 package dev.alexandrevieira.sales.api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.alexandrevieira.sales.validation.NotEmptyList;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public class NewOrderDTO {
     @NotEmptyList(message = "Not allowed creating a order without items")
     private List<ItemDTO> orderItems = new ArrayList<>();
 
+    @JsonIgnore
     public BigDecimal getTotal() {
         BigDecimal total = BigDecimal.valueOf(0);
 
@@ -41,6 +43,8 @@ public class NewOrderDTO {
     public static class ItemDTO {
         private Long product;
         private Integer quantity;
+
+        @JsonIgnore
         private BigDecimal priceAtOrder;
     }
 }
