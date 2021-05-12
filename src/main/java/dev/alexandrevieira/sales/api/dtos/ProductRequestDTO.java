@@ -1,11 +1,11 @@
 package dev.alexandrevieira.sales.api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.alexandrevieira.sales.domain.entities.Product;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
@@ -16,7 +16,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
-public class ProductDTO implements Serializable {
+public class ProductRequestDTO implements Serializable {
+    @JsonIgnore
     private Long id;
 
     @NotEmpty(message = "Description field is empty")
@@ -27,17 +28,16 @@ public class ProductDTO implements Serializable {
     @DecimalMin(value = "0.01", message = "Minimum price is 0.01")
     private BigDecimal price;
 
-    public ProductDTO() {
+    public ProductRequestDTO() {
     }
 
-    public ProductDTO(Product product) {
+    public ProductRequestDTO(Product product) {
         this.id = product.getId();
         this.description = product.getDescription();
         this.price = product.getPrice();
     }
 
     public Product toEntity() {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(this, Product.class);
+        return new Product(this);
     }
 }

@@ -2,7 +2,8 @@ package dev.alexandrevieira.sales.domain.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.alexandrevieira.sales.api.dtos.ProductDTO;
+import dev.alexandrevieira.sales.api.dtos.ProductRequestDTO;
+import dev.alexandrevieira.sales.api.dtos.ProductResponseDTO;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,16 @@ public class Product implements Serializable, GenericEntity<Long> {
     @Column(precision = 15, scale = 2, nullable = false, columnDefinition = "decimal(15, 2) unsigned")
     private BigDecimal price;
 
+    public Product() {
+        
+    }
+
+    public Product(ProductRequestDTO dto) {
+        this.id = dto.getId();
+        this.description = dto.getDescription();
+        this.price = dto.getPrice();
+    }
+
     @Override
     @JsonIgnore
     public boolean allFieldsAreNullOrEmpty() {
@@ -40,8 +51,8 @@ public class Product implements Serializable, GenericEntity<Long> {
     }
 
     @Override
-    public ProductDTO toDTO() {
+    public ProductResponseDTO toDTO() {
         log.info(this.getClass().getSimpleName() + ".toDTO()");
-        return new ProductDTO(this);
+        return new ProductResponseDTO(this);
     }
 }
