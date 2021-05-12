@@ -12,7 +12,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
+//DTO class to receive Order to filter operation
 public class OrderRequestDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String date;
     private OrderStatus status;

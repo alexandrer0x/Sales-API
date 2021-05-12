@@ -18,7 +18,10 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+//DTO class to respond Order
 public class OrderResponseDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private LocalDate orderDate;
     private List<OrderItemDTO> orderItems;
@@ -32,7 +35,7 @@ public class OrderResponseDTO implements Serializable {
     public OrderResponseDTO() {
     }
 
-    public OrderResponseDTO(Order order){
+    public OrderResponseDTO(Order order) {
         this.id = order.getId();
         this.orderDate = order.getOrderDate();
         this.customer = order.getCustomer().getId();

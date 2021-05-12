@@ -24,27 +24,27 @@ import java.util.List;
 @Entity
 
 @NamedEntityGraph(
-    name = "fetchOrders",
-    attributeNodes = {
-        @NamedAttributeNode("id"),
-        @NamedAttributeNode("name"),
-        @NamedAttributeNode("cpf"),
-        @NamedAttributeNode(value = "orders", subgraph = "orderItems")
-    },
-    subgraphs = {
-        @NamedSubgraph(
-            name = "orderItems",
-            attributeNodes = {
-                @NamedAttributeNode(value = "orderItems", subgraph = "product")
-            }
-        ),
-        @NamedSubgraph(
-            name = "product",
-            attributeNodes = {
-                @NamedAttributeNode(value = "product")
-            }
-        )
-    }
+        name = "fetchOrders",
+        attributeNodes = {
+                @NamedAttributeNode("id"),
+                @NamedAttributeNode("name"),
+                @NamedAttributeNode("cpf"),
+                @NamedAttributeNode(value = "orders", subgraph = "orderItems")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "orderItems",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "orderItems", subgraph = "product")
+                        }
+                ),
+                @NamedSubgraph(
+                        name = "product",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "product")
+                        }
+                )
+        }
 )
 
 public class Customer implements Serializable, GenericEntity<Long> {
@@ -66,6 +66,7 @@ public class Customer implements Serializable, GenericEntity<Long> {
 
     public Customer() {
     }
+
     public Customer(CustomerRequestDTO dto) {
         this.id = dto.getId();
         this.name = dto.getName();
@@ -74,7 +75,10 @@ public class Customer implements Serializable, GenericEntity<Long> {
 
     @JsonIgnore
     public boolean allFieldsAreNullOrEmpty() {
-        return id == null && (name == null || name.isEmpty()) && (cpf == null || cpf.isEmpty()) && (this.orders == null || this.orders.isEmpty());
+        log.debug(this.getClass().getSimpleName() + ".allFieldsAreNullOrEmpty()");
+
+        return id == null && (name == null || name.isEmpty()) && (cpf == null || cpf.isEmpty())
+                && (this.orders == null || this.orders.isEmpty());
     }
 
     @JsonIgnore
@@ -84,7 +88,7 @@ public class Customer implements Serializable, GenericEntity<Long> {
     }
 
     public CustomerResponseWithoutOrdersDTO withoutOrdersDTO() {
-        log.info(this.getClass().getSimpleName() + ".noOrdersDTO()");
+        log.info(this.getClass().getSimpleName() + ".withoutOrdersDTO()");
         return new CustomerResponseWithoutOrdersDTO(this);
     }
 }

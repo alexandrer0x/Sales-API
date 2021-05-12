@@ -58,6 +58,7 @@ public class Order implements Serializable, GenericEntity<Long> {
     }
 
     public BigDecimal getTotal() {
+        log.debug(this.getClass().getSimpleName() + ".getTotal()");
         BigDecimal total = BigDecimal.valueOf(0);
 
         for(OrderItem item : orderItems) {
@@ -70,7 +71,8 @@ public class Order implements Serializable, GenericEntity<Long> {
     @Override
     @JsonIgnore
     public boolean allFieldsAreNullOrEmpty() {
-        return false;
+        log.debug(this.getClass().getSimpleName() + ".allFieldsAreNullOrEmpty()");
+        return id == null && orderDate == null && status == null;
     }
 
     @Override

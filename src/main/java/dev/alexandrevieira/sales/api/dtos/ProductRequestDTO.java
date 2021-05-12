@@ -16,7 +16,10 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
+//DTO class to receive Product
 public class ProductRequestDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @JsonIgnore
     private Long id;
 

@@ -14,7 +14,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
+//DTO class to receive Customer
 public class CustomerRequestDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @JsonIgnore
     private Long id;
 

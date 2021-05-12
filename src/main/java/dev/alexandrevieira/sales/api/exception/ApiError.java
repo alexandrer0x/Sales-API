@@ -1,17 +1,27 @@
 package dev.alexandrevieira.sales.api.exception;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 
 @Getter
-public class ApiError {
+//Default object to respond requests with errors
+public class ApiError implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(position = 1)
     private Integer status;
+
+    @ApiModelProperty(position = 2)
     private List<String> errors;
+
+    @ApiModelProperty(position = 3)
     private LocalDateTime timestamp;
 
     public ApiError(HttpStatus status, String error) {

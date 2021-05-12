@@ -7,6 +7,7 @@ import dev.alexandrevieira.sales.api.exception.ApiError;
 import dev.alexandrevieira.sales.domain.entities.Customer;
 import dev.alexandrevieira.sales.services.CustomerService;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,10 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
+//Controller to the '/customers' resource
 @RestController
 @RequestMapping(path = "customers", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class CustomerResource {
     @Autowired
     private CustomerService service;
@@ -37,7 +40,8 @@ public class CustomerResource {
     public CustomerResponseWithoutOrdersDTO findWithoutOrders(
             @PathVariable @ApiParam(value = "Customer id to search for", required = true) Long id) {
 
-        CustomerResponseWithoutOrdersDTO customer = service.findWithoutOrders(id);
+        log.info(this.getClass().getSimpleName() + ".findWithoutOrders(Long id)");
+        CustomerResponseWithoutOrdersDTO customer = service.findWithoutOrders(id).withoutOrdersDTO();
         return customer;
     }
 
@@ -51,7 +55,8 @@ public class CustomerResource {
     public CustomerResponseWithOrdersDTO findWithOrders(
             @PathVariable @ApiParam(value = "Customer id to search for", required = true) Long id) {
 
-        CustomerResponseWithOrdersDTO customer = service.findWithOrders(id);
+        log.info(this.getClass().getSimpleName() + ".findWithOrders(Long id)");
+        CustomerResponseWithOrdersDTO customer = service.findWithOrders(id).toDTO();
         return customer;
     }
 
@@ -62,6 +67,7 @@ public class CustomerResource {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     public List<CustomerResponseWithoutOrdersDTO> filter(CustomerRequestDTO filter) {
+        log.info(this.getClass().getSimpleName() + ".filter(CustomerRequestDTO filter)");
         Customer customer = filter.toEntity();
         List<Customer> list = service.filter(customer);
 
@@ -72,22 +78,23 @@ public class CustomerResource {
     @ResponseStatus(CREATED)
     @ApiOperation(value = "Create a customer")
     @ApiResponses({
-        @ApiResponse(
-            code = 201,
-            message = "Created",
-            responseHeaders = {
-                @ResponseHeader(
-                    name = "location",
-                    description = "The URI to the created customer",
-                    response = URI.class
-                )
-            }
-        ),
-        @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
+            @ApiResponse(
+                    code = 201,
+                    message = "Created",
+                    responseHeaders = {
+                            @ResponseHeader(
+                                    name = "location",
+                                    description = "The URI to the created customer",
+                                    response = URI.class
+                            )
+                    }
+            ),
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     public ResponseEntity<CustomerResponseWithoutOrdersDTO> save(
             @RequestBody @Valid @ApiParam(value = "Customer information", required = true) CustomerRequestDTO customer) {
 
+        log.info(this.getClass().getSimpleName() + ".save(CustomerRequestDTO customer)");
         Customer entity = customer.toEntity();
         entity = service.save(entity);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(entity.getId()).toUri();
@@ -102,6 +109,7 @@ public class CustomerResource {
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
     public void delete(@PathVariable @ApiParam(value = "Customer id to delete", required = true) Long id) {
+        log.info(this.getClass().getSimpleName() + ".delete(Long id)");
         service.delete(id);
     }
 
@@ -116,6 +124,7 @@ public class CustomerResource {
                        @RequestBody @ApiParam(value = "Customer new information", required = true)
                                CustomerRequestDTO customer) {
 
+        log.info(this.getClass().getSimpleName() + ".update(Long id, CustomerRequestDTO customer)");
         Customer entity = customer.toEntity();
         service.update(id, entity);
     }

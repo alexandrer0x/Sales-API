@@ -47,6 +47,7 @@ public class Product implements Serializable, GenericEntity<Long> {
     @Override
     @JsonIgnore
     public boolean allFieldsAreNullOrEmpty() {
+        log.debug(this.getClass().getSimpleName() + ".allFieldsAreNullOrEmpty()");
         return id == null && (description == null || description.isEmpty()) && (price == null);
     }
 

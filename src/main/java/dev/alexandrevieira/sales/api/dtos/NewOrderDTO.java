@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,9 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-//Model class to receive new orders
-public class NewOrderDTO {
+//DTO class to receive new orders
+public class NewOrderDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @NotNull(message = "Invalid customer id")
     @Min(value = 1, message = "Invalid customer id")

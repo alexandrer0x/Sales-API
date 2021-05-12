@@ -30,7 +30,8 @@ public class OrderItem implements Serializable, GenericEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    @JsonIgnore @ToString.Exclude
+    @JsonIgnore
+    @ToString.Exclude
     private Order order;
 
     @ManyToOne
@@ -47,6 +48,7 @@ public class OrderItem implements Serializable, GenericEntity<Long> {
     @Override
     @JsonIgnore
     public boolean allFieldsAreNullOrEmpty() {
+        log.debug(this.getClass().getSimpleName() + ".allFieldsAreNullOrEmpty()");
         return true;
     }
 

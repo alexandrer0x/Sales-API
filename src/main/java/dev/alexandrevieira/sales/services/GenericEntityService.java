@@ -33,14 +33,14 @@ public abstract class GenericEntityService<T, ID, REPOSITORY> {
     public List<T> filter(T filter) {
         log.info(this.getClass().getSimpleName() + ".filter(T filter)");
 
-        if (((GenericEntity)filter).allFieldsAreNullOrEmpty()) {
+        if (((GenericEntity) filter).allFieldsAreNullOrEmpty()) {
             throw new ResponseStatusException(BAD_REQUEST);
         }
 
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.EXACT);
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
         Example<T> example = Example.of(filter, matcher);
         List<T> list = repository.findAll(example);
@@ -56,7 +56,7 @@ public abstract class GenericEntityService<T, ID, REPOSITORY> {
     public void update(ID id, T input) {
         log.info(this.getClass().getSimpleName() + ".update(ID id, T input)");
         GenericEntity existent = (GenericEntity) repository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-        ((GenericEntity)input).setId(existent.getId());
+        ((GenericEntity) input).setId(existent.getId());
         repository.save(input);
     }
 

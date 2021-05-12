@@ -1,7 +1,5 @@
 package dev.alexandrevieira.sales.services;
 
-import dev.alexandrevieira.sales.api.dtos.CustomerResponseWithOrdersDTO;
-import dev.alexandrevieira.sales.api.dtos.CustomerResponseWithoutOrdersDTO;
 import dev.alexandrevieira.sales.domain.entities.Customer;
 import dev.alexandrevieira.sales.domain.repositories.CustomerRepository;
 import dev.alexandrevieira.sales.exceptions.BusinessRuleException;
@@ -17,24 +15,27 @@ public class CustomerService extends GenericEntityService<Customer, Long, Custom
         super(customerRepository);
     }
 
-    public CustomerResponseWithoutOrdersDTO findWithoutOrders(Long id) {
+    public Customer findWithoutOrders(Long id) {
+        log.info(this.getClass().getSimpleName() + ".findWithoutOrders(Long id)");
         Customer customer = repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return  customer.withoutOrdersDTO();
+        return customer;
     }
 
-    public CustomerResponseWithOrdersDTO findWithOrders(Long id) {
-        Customer customer = ((CustomerRepository)repository).findOneById(id).orElseThrow(
+    public Customer findWithOrders(Long id) {
+        log.info(this.getClass().getSimpleName() + ".findWithOrders(Long id)");
+        Customer customer = ((CustomerRepository) repository).findOneById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return  customer.toDTO();
+        return customer;
     }
 
     public Customer save(Customer customer) {
         log.info(this.getClass().getSimpleName() + ".save(Customer customer)");
 
-        if(((CustomerRepository)repository).existsByCpf(customer.getCpf())) {
+        //if already exists a Customer with given CPF
+        if (((CustomerRepository) repository).existsByCpf(customer.getCpf())) {
             throw new BusinessRuleException("CPF already associated with an account");
         }
         customer.setId(null);

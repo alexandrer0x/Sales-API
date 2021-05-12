@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +20,10 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @Slf4j
-public class UserRequestDTO {
+//DTO class to receive User
+public class UserRequestDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @JsonIgnore
     private Long id;
 

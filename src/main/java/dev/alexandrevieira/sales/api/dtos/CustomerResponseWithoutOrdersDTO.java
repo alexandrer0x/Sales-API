@@ -12,7 +12,10 @@ import java.io.Serializable;
 @Setter
 @ToString
 @ApiModel
+//DTO class to respond Customer without orders
 public class CustomerResponseWithoutOrdersDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String name;
     private String cpf;

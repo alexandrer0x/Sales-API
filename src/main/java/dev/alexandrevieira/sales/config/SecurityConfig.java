@@ -26,9 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtService jwtService;
 
     private static final String[] PUBLIC_GET = {"/products/**"};
-    private static final String[] PUBLIC_POST = {"/users/**"};
+    private static final String[] PUBLIC_POST = {"/users/login"};
     private static final String[] ADMIN = {"/**"};
-    private static final String[] USER_POST = {"/orders/**"};
+    private static final String[] USER_POST = {"/orders/**", "/customers/**"};
     private static final String[] USER_GET = {"/orders/**", "/customers/**"};
 
     private static final String[] SWAGGER_MATCHERS = {"/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
@@ -47,13 +47,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //disable CSRF
         http.csrf().disable();
 
+        //disable session creation
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        //add JWT filter
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        //setup endpoints permitted for authorities
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
                 .antMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()

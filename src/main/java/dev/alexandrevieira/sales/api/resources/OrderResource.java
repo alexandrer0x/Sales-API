@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
+//Controller to the '/orders' resource
+
 @RestController
 @RequestMapping(path = "orders", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -38,8 +40,8 @@ public class OrderResource {
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
     public OrderResponseDTO find(@PathVariable @ApiParam(value = "Product id to search for", required = true) Long id) {
-        log.info(this.getClass().getSimpleName() + ".find(@PathVariable Long id)");
-        return service.findDTO(id);
+        log.info(this.getClass().getSimpleName() + ".find(Long id)");
+        return service.find(id).toDTO();
     }
 
     @GetMapping
@@ -49,6 +51,7 @@ public class OrderResource {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     public List<OrderResponseDTO> filter(OrderRequestDTO filter) {
+        log.info(this.getClass().getSimpleName() + ".filter(OrderRequestDTO filter)");
         Order order = filter.toEntity();
         List<Order> list = service.filter(order);
 
@@ -72,7 +75,11 @@ public class OrderResource {
             ),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
-    public ResponseEntity<OrderResponseDTO> save(@RequestBody @Valid @ApiParam(value = "Order information", name = "order", required = true) NewOrderDTO dto) {
+    public ResponseEntity<OrderResponseDTO> save(
+            @RequestBody @Valid @ApiParam(value = "Order information", name = "order", required = true)
+                    NewOrderDTO dto) {
+
+        log.info(this.getClass().getSimpleName() + ".save(NewOrderDTO dto)");
         Order order = service.saveDTO(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(order.getId()).toUri();
         return ResponseEntity.created(uri).body(order.toDTO());
@@ -86,6 +93,7 @@ public class OrderResource {
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
     public void delete(@PathVariable @ApiParam(value = "Order id to delete", required = true) Long id) {
+        log.info(this.getClass().getSimpleName() + ".delete(Long id)");
         service.delete(id);
     }
 
@@ -97,7 +105,12 @@ public class OrderResource {
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
     public void updateOrderStatus(@PathVariable @ApiParam(value = "Order id to update", required = true) Long id,
-                             @RequestBody @ApiParam(value = "Order new status", required = true) OrderStatusUpdateDTO orderStatusUpdateDTO) {
+                                  @RequestBody @ApiParam(value = "Order new status", required = true)
+                                          OrderStatusUpdateDTO orderStatusUpdateDTO) {
+
+        log.info(this.getClass().getSimpleName() + ".updateOrderStatus(Long id, " +
+                "OrderStatusUpdateDTO orderStatusUpdateDTO)");
+
         OrderStatus status = OrderStatus.valueOf(orderStatusUpdateDTO.getNewStatus());
         service.updateOrderStatus(id, status);
     }

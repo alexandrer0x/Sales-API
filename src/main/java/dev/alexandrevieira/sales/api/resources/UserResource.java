@@ -6,16 +6,14 @@ import dev.alexandrevieira.sales.api.dtos.UserRequestDTO;
 import dev.alexandrevieira.sales.api.dtos.UserResponseDTO;
 import dev.alexandrevieira.sales.api.exception.ApiError;
 import dev.alexandrevieira.sales.domain.entities.User;
-import dev.alexandrevieira.sales.exceptions.InvalidCredentialsException;
 import dev.alexandrevieira.sales.services.UserService;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -24,8 +22,10 @@ import java.util.HashSet;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
+//Controller to the '/users' resource
 @RestController
 @RequestMapping(path = "users", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class UserResource {
     @Autowired
     private UserService userService;
@@ -50,7 +50,10 @@ public class UserResource {
             ),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
-    public UserResponseDTO save(@RequestBody @Valid @ApiParam(value = "User information", name = "user", required = true) UserRequestDTO userRequestDTO) {
+    public UserResponseDTO save(@RequestBody @Valid
+                                @ApiParam(value = "User information", name = "user", required = true)
+                                        UserRequestDTO userRequestDTO) {
+        log.info(this.getClass().getSimpleName() + ".save(UserRequestDTO userRequestDTO)");
         String encryptedPassword = encoder.encode(userRequestDTO.getPassword());
         userRequestDTO.setPassword(encryptedPassword);
         User user = userRequestDTO.toEntity();
@@ -63,18 +66,13 @@ public class UserResource {
     @ApiResponses({
             @ApiResponse(code = 401, message = "Unauthorized", response = ApiError.class)
     })
-    public TokenDTO authenticate(@RequestBody @ApiParam(value = "User credentials", name = "credentials", required = true) CredentialsDTO dto) {
-        try {
-            User user = new User(null, dto.getUsername(), dto.getPassword(), new HashSet<>());
+    public TokenDTO authenticate(@RequestBody @ApiParam(value = "User credentials",
+            name = "credentials", required = true) CredentialsDTO dto) {
 
-            String token = userService.authenticate(user);
-
-            return new TokenDTO(user.getUsername(), token);
-
-        }
-        catch (UsernameNotFoundException | InvalidCredentialsException ex) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ex.getMessage());
-        }
+        log.info(this.getClass().getSimpleName() + ".authenticate(CredentialsDTO dto)");
+        User user = new User(null, dto.getUsername(), dto.getPassword(), new HashSet<>());
+        String token = userService.authenticate(user);
+        return new TokenDTO(user.getUsername(), token);
     }
 
     @GetMapping(path = "{id}")
@@ -85,6 +83,7 @@ public class UserResource {
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
     public UserResponseDTO find(@PathVariable @ApiParam(value = "User id to search for", required = true) Long id) {
+        log.info(this.getClass().getSimpleName() + ".find(Long id)");
         return userService.find(id).toDTO();
     }
 
@@ -95,7 +94,8 @@ public class UserResource {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
-    public void delete(@PathVariable @ApiParam(value = "User id to delete", required = true)  Long id) {
+    public void delete(@PathVariable @ApiParam(value = "User id to delete", required = true) Long id) {
+        log.info(this.getClass().getSimpleName() + ".delete(Long id)");
         userService.delete(id);
     }
 }

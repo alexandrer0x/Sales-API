@@ -15,8 +15,8 @@ public enum OrderStatus {
     }
 
     public static OrderStatus byCode(int code) {
-        for(OrderStatus status : OrderStatus.values()) {
-            if(code == status.getCode()) {
+        for (OrderStatus status : OrderStatus.values()) {
+            if (code == status.getCode()) {
                 return status;
             }
         }

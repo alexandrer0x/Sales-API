@@ -1,7 +1,6 @@
 package dev.alexandrevieira.sales.services;
 
 import dev.alexandrevieira.sales.api.dtos.NewOrderDTO;
-import dev.alexandrevieira.sales.api.dtos.OrderResponseDTO;
 import dev.alexandrevieira.sales.domain.entities.Customer;
 import dev.alexandrevieira.sales.domain.entities.Order;
 import dev.alexandrevieira.sales.domain.entities.OrderItem;
@@ -43,11 +42,12 @@ public class OrderService extends GenericEntityService<Order, Long, OrderReposit
     }
 
 
-    public OrderResponseDTO findDTO(Long id) {
+    public Order find(Long id) {
+        log.info(this.getClass().getSimpleName() + ".find(Long id)");
         Order order = ((OrderRepository) repository).findOneById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return order.toDTO();
+        return order;
 
     }
 
@@ -125,10 +125,13 @@ public class OrderService extends GenericEntityService<Order, Long, OrderReposit
                 + ".convertItems(List<ItemDTO> items, Order order, List<Product> products)");
 
         if(items.isEmpty()) {
-            throw new BusinessRuleException("Not allowed creating a order without items");
+            String message = "Not allowed creating a order without items";
+            log.warn(message);
+            throw new BusinessRuleException(message);
         }
 
         //convert the products List to Map
+        log.debug("Converting the products List to Map");
         Map<Long, Product> productsMap = products.stream().collect(Collectors.toMap(
                 Product::getId, product -> product));
 
@@ -153,6 +156,7 @@ public class OrderService extends GenericEntityService<Order, Long, OrderReposit
 
     @Transactional
     public void updateOrderStatus(Long id, OrderStatus status) {
+        log.info(this.getClass().getSimpleName() + ".updateOrderStatus(Long id, OrderStatus status)");
         Order order = this.find(id);
         order.setStatus(status);
         repository.save(order);

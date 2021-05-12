@@ -75,6 +75,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        log.debug(this.getClass().getSimpleName() + ".getAuthorities()");
         return this.getProfiles().stream().map(
                 x -> new SimpleGrantedAuthority(x.getDescription()))
                 .collect(Collectors.toList());
@@ -101,14 +102,17 @@ public class User implements Serializable, UserDetails {
     }
 
     public boolean hasRole(Profile profile) {
+        log.debug(this.getClass().getSimpleName() + ".hasRole(Profile profile)");
         return this.getAuthorities().contains(new SimpleGrantedAuthority(profile.getDescription()));
     }
 
     public Set<Profile> getProfiles() {
+        log.debug(this.getClass().getSimpleName() + ".getProfiles()");
         return this.profiles.stream().map(x -> Profile.byDescription(x)).collect(Collectors.toSet());
     }
 
     public void addProfile(Profile profile) {
+        log.debug(this.getClass().getSimpleName() + ".addProfile(Profile profile)");
         this.profiles.add(profile.getDescription());
     }
 }

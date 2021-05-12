@@ -6,6 +6,7 @@ import dev.alexandrevieira.sales.api.exception.ApiError;
 import dev.alexandrevieira.sales.domain.entities.Product;
 import dev.alexandrevieira.sales.services.ProductService;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,10 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
+//Controller to the '/products' resource
 @RestController
 @RequestMapping(path = "products", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class ProductResource {
     @Autowired
     private ProductService service;
@@ -35,6 +38,7 @@ public class ProductResource {
     public ProductResponseDTO find(
             @PathVariable @ApiParam(value = "Product id to search for", required = true) Long id) {
 
+        log.info(this.getClass().getSimpleName() + ".find(Long id)");
         return service.find(id).toDTO();
     }
 
@@ -45,6 +49,7 @@ public class ProductResource {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     public List<ProductResponseDTO> filter(ProductRequestDTO filter) {
+        log.info(this.getClass().getSimpleName() + ".filter(ProductRequestDTO filter)");
         Product product = filter.toEntity();
         List<Product> list = service.filter(product);
 
@@ -69,8 +74,10 @@ public class ProductResource {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     public ResponseEntity<ProductResponseDTO> save(
-            @RequestBody @Valid @ApiParam(value = "Product information", name = "product", required = true) ProductRequestDTO dto) {
+            @RequestBody @Valid @ApiParam(value = "Product information", name = "product", required = true)
+                    ProductRequestDTO dto) {
 
+        log.info(this.getClass().getSimpleName() + ".save(ProductRequestDTO dto)");
         Product entity = dto.toEntity();
         entity = service.save(entity);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(entity.getId()).toUri();
@@ -85,6 +92,7 @@ public class ProductResource {
             @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
     })
     public void delete(@PathVariable @ApiParam(value = "Product id to delete", required = true) Long id) {
+        log.info(this.getClass().getSimpleName() + ".delete(Long id)");
         service.delete(id);
     }
 
@@ -99,6 +107,7 @@ public class ProductResource {
                        @RequestBody @ApiParam(value = "Product new information", required = true)
                                ProductRequestDTO product) {
 
+        log.info(this.getClass().getSimpleName() + ".update(Long id, ProductRequestDTO product)");
         Product entity = product.toEntity();
         service.update(id, entity);
     }

@@ -8,11 +8,15 @@ import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @ToString
-public class CredentialsDTO {
+//DTO class to receive credentials
+public class CredentialsDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Email(message = "Invalid username")
     @NotEmpty(message = "Username field is empty")
     @ApiModelProperty(position = 1)

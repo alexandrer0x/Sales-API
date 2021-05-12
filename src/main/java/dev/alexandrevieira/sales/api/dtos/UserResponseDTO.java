@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +17,10 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @Slf4j
-public class UserResponseDTO {
+//DTO class to respond User
+public class UserResponseDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(position = 1)
     private Long id;
 
