@@ -1,8 +1,12 @@
 package dev.alexandrevieira.sales.domain.entities;
 
-import dev.alexandrevieira.sales.api.dtos.UserDTO;
+import dev.alexandrevieira.sales.api.dtos.UserRequestDTO;
+import dev.alexandrevieira.sales.api.dtos.UserResponseDTO;
 import dev.alexandrevieira.sales.domain.enums.Profile;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,15 +62,15 @@ public class User implements Serializable, UserDetails {
         this.addProfile(Profile.USER);
     }
 
-    public User(UserDTO dto) {
+    public User(UserRequestDTO dto) {
         this.id = dto.getId();
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.addProfile(Profile.USER);
     }
 
-    public UserDTO toDTO() {
-        return new UserDTO(this);
+    public UserResponseDTO toDTO() {
+        return new UserResponseDTO(this);
     }
 
     @Override

@@ -2,22 +2,30 @@ package dev.alexandrevieira.sales.api.resources;
 
 import dev.alexandrevieira.sales.api.dtos.CredentialsDTO;
 import dev.alexandrevieira.sales.api.dtos.TokenDTO;
-import dev.alexandrevieira.sales.api.dtos.UserDTO;
+import dev.alexandrevieira.sales.api.dtos.UserRequestDTO;
+import dev.alexandrevieira.sales.api.dtos.UserResponseDTO;
+import dev.alexandrevieira.sales.api.exception.ApiError;
 import dev.alexandrevieira.sales.domain.entities.User;
 import dev.alexandrevieira.sales.exceptions.InvalidCredentialsException;
 import dev.alexandrevieira.sales.services.UserService;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.HashSet;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
-@RequestMapping(path = "users")
+@RequestMapping(path = "users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserResource {
     @Autowired
     private UserService userService;
@@ -27,15 +35,35 @@ public class UserResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO save(@RequestBody @Valid UserDTO userDTO) {
-        String encryptedPassword = encoder.encode(userDTO.getPassword());
-        userDTO.setPassword(encryptedPassword);
-        User user = userDTO.toEntity();
+    @ApiOperation(value = "Create a user")
+    @ApiResponses({
+            @ApiResponse(
+                    code = 201,
+                    message = "Created",
+                    responseHeaders = {
+                            @ResponseHeader(
+                                    name = "location",
+                                    description = "The URI to the created user",
+                                    response = URI.class
+                            )
+                    }
+            ),
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
+    })
+    public UserResponseDTO save(@RequestBody @Valid @ApiParam(value = "User information", name = "user", required = true) UserRequestDTO userRequestDTO) {
+        String encryptedPassword = encoder.encode(userRequestDTO.getPassword());
+        userRequestDTO.setPassword(encryptedPassword);
+        User user = userRequestDTO.toEntity();
         return userService.save(user).toDTO();
     }
 
-    @PostMapping(path = "auth")
-    public TokenDTO authenticate(@RequestBody CredentialsDTO dto) {
+    @PostMapping(path = "login")
+    @ResponseStatus(OK)
+    @ApiOperation("User authentication with JWT")
+    @ApiResponses({
+            @ApiResponse(code = 401, message = "Unauthorized", response = ApiError.class)
+    })
+    public TokenDTO authenticate(@RequestBody @ApiParam(value = "User credentials", name = "credentials", required = true) CredentialsDTO dto) {
         try {
             User user = new User(null, dto.getUsername(), dto.getPassword(), new HashSet<>());
 
@@ -50,7 +78,24 @@ public class UserResource {
     }
 
     @GetMapping(path = "{id}")
-    public UserDTO find(@PathVariable Long id) {
+    @ResponseStatus(OK)
+    @ApiOperation("Search for a user information by id")
+    @ApiResponses({
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
+    })
+    public UserResponseDTO find(@PathVariable @ApiParam(value = "User id to search for", required = true) Long id) {
         return userService.find(id).toDTO();
+    }
+
+    @DeleteMapping(path = "{id}")
+    @ResponseStatus(NO_CONTENT)
+    @ApiOperation(value = "Delete a user by id")
+    @ApiResponses({
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 404, message = "Not found", response = ApiError.class)
+    })
+    public void delete(@PathVariable @ApiParam(value = "User id to delete", required = true)  Long id) {
+        userService.delete(id);
     }
 }

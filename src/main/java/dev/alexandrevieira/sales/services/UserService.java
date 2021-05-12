@@ -7,17 +7,15 @@ import dev.alexandrevieira.sales.exceptions.InvalidCredentialsException;
 import dev.alexandrevieira.sales.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService extends GenericEntityService<User, Long, UserRepository> implements UserDetailsService  {
     @Autowired
     private PasswordEncoder encoder;
 
@@ -26,6 +24,10 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private JwtService jwtService;
+
+    public UserService(UserRepository userRepository) {
+        super(userRepository);
+    }
 
     @Transactional
     public User save(User user) {
@@ -66,8 +68,5 @@ public class UserService implements UserDetailsService {
 //                .build();
     }
 
-    public User find(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
+
 }

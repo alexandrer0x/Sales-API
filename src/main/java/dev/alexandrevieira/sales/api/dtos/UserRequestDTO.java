@@ -1,8 +1,9 @@
 package dev.alexandrevieira.sales.api.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.alexandrevieira.sales.domain.entities.User;
 import dev.alexandrevieira.sales.domain.enums.Profile;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,23 +19,26 @@ import java.util.stream.Collectors;
 @Setter
 @ToString
 @Slf4j
-public class UserDTO {
+public class UserRequestDTO {
+    @JsonIgnore
     private Long id;
 
-    @Email(message = "Invalid email")
+    @Email(message = "Invalid username")
     @NotEmpty(message = "Username field is empty")
+    @ApiModelProperty(position = 1)
     private String username;
 
     @NotEmpty(message = "Password field is empty")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ApiModelProperty(position = 2)
     private String password;
 
+    @ApiModelProperty(position = 3)
     private Set<String> profiles = new HashSet<>();
 
-    public UserDTO() {
+    public UserRequestDTO() {
     }
 
-    public UserDTO(User user) {
+    public UserRequestDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
