@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtService jwtService;
 
     private static final String[] PUBLIC_GET = {"/products/**"};
-    private static final String[] PUBLIC_POST = {"/users/login"};
+    private static final String[] PUBLIC_POST = {"/users/**"};
     private static final String[] ADMIN = {"/**"};
     private static final String[] USER_POST = {"/orders/**", "/customers/**"};
     private static final String[] USER_GET = {"/orders/**", "/customers/**"};
